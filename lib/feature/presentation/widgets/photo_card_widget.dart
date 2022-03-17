@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 import 'package:test_task/common/app_colors.dart';
 import 'package:test_task/feature/domain/entities/photo_entity.dart';
 import 'package:test_task/feature/presentation/widgets/cache_image_widget.dart';
@@ -47,14 +48,19 @@ class PhotoCard extends StatelessWidget {
                   Text(
                     photo.title,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(Icons.favorite_border)),
+                      child: LikeButton(
+                        size: 24,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        animationDuration: const Duration(microseconds: 0),
+                      )),
                 ],
               ),
             ),
