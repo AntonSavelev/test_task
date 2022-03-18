@@ -46,7 +46,7 @@ class PhotoCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    photo.title,
+                    '${photo.title} - ${photo.id}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white,

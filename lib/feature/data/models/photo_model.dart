@@ -4,18 +4,19 @@ import 'package:test_task/feature/domain/entities/photo_entity.dart';
 
 class PhotoModel extends PhotoEntity {
   PhotoModel({
-    required albumId,
-    required id,
-    required title,
-    required url,
-    required thumbnailUrl,
+    albumId,
+    id,
+    title,
+    url,
+    thumbnailUrl,
+    isLike,
   }) : super(
-          albumId: albumId,
-          id: id,
-          title: title,
-          url: url,
-          thumbnailUrl: thumbnailUrl,
-        );
+            albumId: albumId,
+            id: id,
+            title: title,
+            url: url,
+            thumbnailUrl: thumbnailUrl,
+            isLike: isLike);
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) {
     return PhotoModel(
@@ -24,6 +25,7 @@ class PhotoModel extends PhotoEntity {
       title: json['title'],
       url: json['url'],
       thumbnailUrl: json['thumbnailUrl'],
+      isLike: false,
     );
   }
 
@@ -34,6 +36,19 @@ class PhotoModel extends PhotoEntity {
       'title': title,
       'url': url,
       'thumbnailUrl': thumbnailUrl,
+      'isLike': isLike ? 1 : 0,
     };
+  }
+
+  Map<String, Object?> toMap() {
+    var map = <String, Object?>{
+      'albumId': albumId,
+      'id': id,
+      'title': title,
+      'url': url,
+      'thumbnailUrl': thumbnailUrl,
+      'like': isLike ? 1 : 0,
+    };
+    return map;
   }
 }
