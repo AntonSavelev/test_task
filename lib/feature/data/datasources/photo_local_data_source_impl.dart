@@ -4,8 +4,6 @@ import 'package:test_task/feature/data/datasources/photo_local_data_source.dart'
 import 'package:test_task/feature/data/db/database.dart';
 import 'package:test_task/feature/data/models/photo_model.dart';
 
-const CACHED_PHOTOS_LIST = 'CACHED_PHOTOS_LIST';
-
 class PhotoLocalDataSourceImpl implements PhotoLocalDataSource {
   final SharedPreferences sharedPreferences;
   final DBProvider dbProvider;
@@ -21,7 +19,7 @@ class PhotoLocalDataSourceImpl implements PhotoLocalDataSource {
     } else if (photosList.length == 0) {
       return [];
     } else {
-      throw CacheException();
+      throw LocalDatabaseException();
     }
   }
 
@@ -29,8 +27,21 @@ class PhotoLocalDataSourceImpl implements PhotoLocalDataSource {
   Future<void> photosToCache(List<PhotoModel> photos) async {
     if (photos.isNotEmpty) {
       photos.forEach((photo) async {
-        await dbProvider.insertPhoto(photo);
+        try {
+          await dbProvider.insertPhoto(photo);
+        } catch (e) {
+          throw LocalDatabaseException();
+        }
       });
+    }
+  }
+
+  @override
+  Future<int> updatePhotoInDatabase(PhotoModel photoModel) async {
+    try {
+      return dbProvider.updatePhoto(photoModel);
+    } catch (e) {
+      throw LocalDatabaseException();
     }
   }
 }

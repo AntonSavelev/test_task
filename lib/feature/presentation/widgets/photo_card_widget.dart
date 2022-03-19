@@ -7,10 +7,12 @@ import 'package:test_task/feature/presentation/widgets/image_dialog.dart';
 
 class PhotoCard extends StatelessWidget {
   final PhotoEntity photo;
+  final Future<bool?> Function(bool)? onTap;
 
   const PhotoCard({
     Key? key,
     required this.photo,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -56,14 +58,18 @@ class PhotoCard extends StatelessWidget {
                     ),
                   ),
                   Align(
-                      alignment: Alignment.centerRight,
-                      child: LikeButton(
-                        size: 24,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        animationDuration: const Duration(microseconds: 0),
-                        isLiked: photo.isLike,
-                        // onTap: onTap(),
+                      alignment: Alignment.bottomRight,
+                      child: SizedBox(
+                        width: 32,
+                        child: LikeButton(
+                          size: 24,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          animationDuration: const Duration(microseconds: 0),
+                          isLiked: photo.isLike,
+                          onTap: onTap,
+                          // onTap:,
+                        ),
                       )),
                 ],
               ),

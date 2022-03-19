@@ -11,6 +11,7 @@ import 'package:test_task/feature/data/db/database.dart';
 import 'package:test_task/feature/data/repositories/photo_repository_impl.dart';
 import 'package:test_task/feature/domain/repositories/photo_repository.dart';
 import 'package:test_task/feature/domain/usecases/get_all_photos.dart';
+import 'package:test_task/feature/domain/usecases/update_photo.dart';
 import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_cubit.dart';
 
 final sl = GetIt.instance;
@@ -19,11 +20,13 @@ Future<void> init() async {
   // BLoC / Cubit
   sl.registerFactory(() => PhotoListCubit(
         getAllPhotos: sl<GetAllPhotos>(),
+        updatePhoto: sl<UpdatePhoto>(),
         sharedPreferences: sl(),
       ));
 
   // UseCases
   sl.registerLazySingleton(() => GetAllPhotos(sl()));
+  sl.registerLazySingleton(() => UpdatePhoto(sl()));
 
   // Repository
   sl.registerLazySingleton<PhotoRepository>(

@@ -18,6 +18,7 @@ class _PhotosListState extends State<PhotosList> {
   final scrollController = ScrollController();
 
   final int page = -1;
+  List<PhotoEntity> photos = [];
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _PhotosListState extends State<PhotosList> {
   Widget build(BuildContext context) {
     context.read<PhotoListCubit>().loadPhoto();
     setupScrollController(context);
-    List<PhotoEntity> photos = [];
+
     bool isLoading = false;
     return BlocBuilder<PhotoListCubit, PhotoState>(builder: (context, state) {
       if (state is PhotoLoading && state.isFirstFetch) {
@@ -63,6 +64,8 @@ class _PhotosListState extends State<PhotosList> {
           if (index < photos.length) {
             return PhotoCard(
               photo: photos[index],
+              onTap: (isLike) =>
+                  onLikeButtonTapped(isLike, photos[index], index),
             );
           } else {
             Timer(const Duration(milliseconds: 30), () {
@@ -89,5 +92,13 @@ class _PhotosListState extends State<PhotosList> {
         child: CircularProgressIndicator(),
       ),
     );
+  }
+
+  Future<bool> onLikeButtonTapped(
+      bool isLiked, PhotoEntity photo, int index) async {
+    photo.isLike = !photo.isLike;
+    photos[index] = photo;
+    context.read<PhotoListCubit>().updatePhotoInDatabase(photo);
+    return !isLiked;
   }
 }

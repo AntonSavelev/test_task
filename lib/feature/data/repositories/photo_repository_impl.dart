@@ -43,13 +43,13 @@ class PhotoRepositoryImpl implements PhotoRepository {
           } else {
             final remotePhotos = await getPhotos();
             localDataSource.photosToCache(remotePhotos);
-            await pageNumberIncrease();
+            await _pageNumberIncrease();
             return Right(remotePhotos);
           }
         } else {
           final remotePhotos = await getPhotos();
           localDataSource.photosToCache(remotePhotos);
-          await pageNumberIncrease();
+          await _pageNumberIncrease();
           return Right(remotePhotos);
         }
       } on ServerException {
@@ -64,15 +64,25 @@ class PhotoRepositoryImpl implements PhotoRepository {
         } else {
           return Right([]);
         }
-      } on CacheException {
-        return Left(CacheFailure());
+      } on LocalDatabaseException {
+        return Left(LocalDatabaseFailure());
       }
     }
   }
 
-  Future<void> pageNumberIncrease() async {
+  Future<void> _pageNumberIncrease() async {
     int page = sharedPreferences.getInt(Constants.pageNumber) ?? 1;
     page++;
     await sharedPreferences.setInt(Constants.pageNumber, page);
+  }
+
+  @override
+  Future<Either<Failure, int>> updatePhoto(PhotoEntity photoEntity) async {
+    try {
+      return Right(await localDataSource
+          .updatePhotoInDatabase(photoEntity as PhotoModel));
+    } on LocalDatabaseException {
+      return Left(LocalDatabaseFailure());
+    }
   }
 }
