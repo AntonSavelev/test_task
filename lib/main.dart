@@ -4,6 +4,7 @@ import 'package:test_task/common/app_colors.dart';
 import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_cubit.dart';
 import 'package:test_task/feature/presentation/pages/home_page.dart';
 import 'package:test_task/locator_service.dart' as di;
+
 import 'locator_service.dart';
 
 void main() async {
@@ -19,8 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PhotoListCubit>(
-            create: (context) => sl<PhotoListCubit>()..loadPhoto()),
+        BlocProvider<PhotoListCubit>(create: (context) => sl<PhotoListCubit>()),
       ],
       child: MaterialApp(
         theme: ThemeData.dark().copyWith(

@@ -21,9 +21,7 @@ class DBProvider {
   String like = 'like';
 
   Future<Database> get database async {
-    print('database');
     if (_database != null) return _database!;
-
     _database = await _initDB();
     return _database!;
   }
@@ -31,7 +29,6 @@ class DBProvider {
   Future<Database> _initDB() async {
     Directory dir = await getApplicationDocumentsDirectory();
     String path = dir.path + 'Photo.db';
-    print('Init db method');
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
@@ -61,7 +58,6 @@ class DBProvider {
   // INSERT
   Future<PhotoModel> insertPhoto(PhotoModel photoModel) async {
     Database db = await this.database;
-    print(db.isOpen);
     photoModel.id = await db.insert(photosTable, photoModel.toMap());
     return photoModel;
   }

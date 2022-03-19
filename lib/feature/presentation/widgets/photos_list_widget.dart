@@ -7,11 +7,23 @@ import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_
 import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_state.dart';
 import 'package:test_task/feature/presentation/widgets/photo_card_widget.dart';
 
-class PhotosList extends StatelessWidget {
+class PhotosList extends StatefulWidget {
+  PhotosList({Key? key}) : super(key: key);
+
+  @override
+  _PhotosListState createState() => _PhotosListState();
+}
+
+class _PhotosListState extends State<PhotosList> {
   final scrollController = ScrollController();
+
   final int page = -1;
 
-  PhotosList({Key? key}) : super(key: key);
+  @override
+  void initState() {
+    context.read<PhotoListCubit>().startApp();
+    super.initState();
+  }
 
   void setupScrollController(BuildContext context) {
     scrollController.addListener(() {
@@ -25,6 +37,7 @@ class PhotosList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<PhotoListCubit>().loadPhoto();
     setupScrollController(context);
     List<PhotoEntity> photos = [];
     bool isLoading = false;
@@ -48,7 +61,9 @@ class PhotosList extends StatelessWidget {
         controller: scrollController,
         itemBuilder: (context, index) {
           if (index < photos.length) {
-            return PhotoCard(photo: photos[index]);
+            return PhotoCard(
+              photo: photos[index],
+            );
           } else {
             Timer(const Duration(milliseconds: 30), () {
               scrollController

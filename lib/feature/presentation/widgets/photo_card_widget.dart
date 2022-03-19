@@ -8,7 +8,10 @@ import 'package:test_task/feature/presentation/widgets/image_dialog.dart';
 class PhotoCard extends StatelessWidget {
   final PhotoEntity photo;
 
-  const PhotoCard({Key? key, required this.photo}) : super(key: key);
+  const PhotoCard({
+    Key? key,
+    required this.photo,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +27,8 @@ class PhotoCard extends StatelessWidget {
               await showDialog(
                   context: context,
                   builder: (_) => ImageDialog(
-                    imageUrl: photo.url,
-                  )
-              );
+                        imageUrl: photo.url,
+                      ));
             },
             child: CacheImage(
               width: 150,
@@ -60,6 +62,8 @@ class PhotoCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         animationDuration: const Duration(microseconds: 0),
+                        isLiked: photo.isLike,
+                        // onTap: onTap(),
                       )),
                 ],
               ),

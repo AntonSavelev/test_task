@@ -17,22 +17,21 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // BLoC / Cubit
-  sl.registerFactory(
-    () => PhotoListCubit(
+  sl.registerFactory(() => PhotoListCubit(
         getAllPhotos: sl<GetAllPhotos>(),
         sharedPreferences: sl(),
-        dbProvider: sl()),
-  );
+      ));
 
   // UseCases
   sl.registerLazySingleton(() => GetAllPhotos(sl()));
 
   // Repository
   sl.registerLazySingleton<PhotoRepository>(
-        () => PhotoRepositoryImpl(
+    () => PhotoRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
+      sharedPreferences: sl(),
     ),
   );
 
@@ -57,6 +56,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
 
+  //DB
   final dBProvider = DBProvider.db;
   sl.registerLazySingleton(() => dBProvider);
 }
