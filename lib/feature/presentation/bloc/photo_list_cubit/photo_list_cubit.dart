@@ -9,6 +9,7 @@ import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_
 
 const SERVER_FAILURE_MESSAGE = 'Server Failure';
 const LOCAL_DATABASE_FAILURE_MESSAGE = 'Local Database Failure';
+const INTERNET_CONNECTION_MESSAGE = 'No internet connection';
 
 class PhotoListCubit extends Cubit<PhotoState> {
   final GetAllPhotos getAllPhotos;
@@ -50,6 +51,8 @@ class PhotoListCubit extends Cubit<PhotoState> {
         return SERVER_FAILURE_MESSAGE;
       case LocalDatabaseFailure:
         return LOCAL_DATABASE_FAILURE_MESSAGE;
+      case InternetConnectionFailure:
+        return INTERNET_CONNECTION_MESSAGE;
       default:
         return 'Unexpected Error';
     }

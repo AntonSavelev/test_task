@@ -62,7 +62,7 @@ class PhotoRepositoryImpl implements PhotoRepository {
           final localPhotos = await localDataSource.getLastPhotosFromCache();
           return Right(localPhotos);
         } else {
-          return Right([]);
+          return Left(InternetConnectionFailure());
         }
       } on LocalDatabaseException {
         return Left(LocalDatabaseFailure());
