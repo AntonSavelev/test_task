@@ -57,12 +57,13 @@ class PhotoRepositoryImpl implements PhotoRepository {
       }
     } else {
       try {
+        int page = sharedPreferences.getInt(Constants.pageNumber) ?? 1;
         if (isNeedToCheckCache) {
           await sharedPreferences.setBool(Constants.isNeedToCheckCache, false);
           final localPhotos = await localDataSource.getLastPhotosFromCache();
           return Right(localPhotos);
         } else {
-          return Left(InternetConnectionFailure());
+          return Right([]);
         }
       } on LocalDatabaseException {
         return Left(LocalDatabaseFailure());
