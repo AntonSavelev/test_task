@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_task/common/app_colors.dart';
 import 'package:test_task/feature/domain/entities/photo_entity.dart';
 import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_cubit.dart';
 import 'package:test_task/feature/presentation/bloc/photo_list_cubit/photo_list_state.dart';
 import 'package:test_task/feature/presentation/widgets/photo_card_widget.dart';
 
 class PhotosList extends StatefulWidget {
-  PhotosList({Key? key}) : super(key: key);
+  PhotosList({Key? key, required this.scaffoldKey}) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   _PhotosListState createState() => _PhotosListState();
@@ -18,7 +20,7 @@ class _PhotosListState extends State<PhotosList> {
   final scrollController = ScrollController();
 
   final int page = -1;
-  List<PhotoEntity> photos = [];
+  List<PhotoEntity> _photos = [];
 
   @override
   void initState() {
@@ -41,15 +43,21 @@ class _PhotosListState extends State<PhotosList> {
     context.read<PhotoListCubit>().loadPhoto();
     setupScrollController(context);
 
-    bool isLoading = false;
-    return BlocBuilder<PhotoListCubit, PhotoState>(builder: (context, state) {
+    bool _isLoading = false;
+    bool _isInternetConnectionAvailable = true;
+    return BlocConsumer<PhotoListCubit, PhotoState>(listener: (context, state) {
+      if (state is PhotoNoInternetConnection) {
+        _isInternetConnectionAvailable = false;
+        _showSnackBar(state.message);
+      }
+    }, builder: (context, state) {
       if (state is PhotoLoading && state.isFirstFetch) {
         return _loadingIndicator();
       } else if (state is PhotoLoading) {
-        photos = state.oldPhotoList;
-        isLoading = true;
+        _photos = state.oldPhotoList;
+        _isLoading = true;
       } else if (state is PhotoLoaded) {
-        photos = state.photosList;
+        _photos = state.photosList;
       } else if (state is PhotoError) {
         return Center(
           child: Text(
@@ -61,18 +69,20 @@ class _PhotosListState extends State<PhotosList> {
       return ListView.separated(
         controller: scrollController,
         itemBuilder: (context, index) {
-          if (index < photos.length) {
+          if (index < _photos.length) {
             return PhotoCard(
-              photo: photos[index],
+              photo: _photos[index],
               onTap: (isLike) =>
-                  onLikeButtonTapped(isLike, photos[index], index),
+                  onLikeButtonTapped(isLike, _photos[index], index),
             );
           } else {
             Timer(const Duration(milliseconds: 30), () {
               scrollController
                   .jumpTo(scrollController.position.maxScrollExtent);
             });
-            return _loadingIndicator();
+            return _isInternetConnectionAvailable
+                ? _loadingIndicator()
+                : Container();
           }
         },
         separatorBuilder: (context, index) {
@@ -80,7 +90,7 @@ class _PhotosListState extends State<PhotosList> {
             color: Colors.grey[400],
           );
         },
-        itemCount: photos.length + (isLoading ? 1 : 0),
+        itemCount: _photos.length + (_isLoading ? 1 : 0),
       );
     });
   }
@@ -94,10 +104,22 @@ class _PhotosListState extends State<PhotosList> {
     );
   }
 
+  _showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(color: AppColors.greyColor),
+      ),
+      backgroundColor: AppColors.mainBackground,
+    );
+    ScaffoldMessenger.of(widget.scaffoldKey.currentContext!)
+        .showSnackBar(snackBar);
+  }
+
   Future<bool> onLikeButtonTapped(
       bool isLiked, PhotoEntity photo, int index) async {
     photo.isLike = !photo.isLike;
-    photos[index] = photo;
+    _photos[index] = photo;
     context.read<PhotoListCubit>().updatePhotoInDatabase(photo);
     return !isLiked;
   }

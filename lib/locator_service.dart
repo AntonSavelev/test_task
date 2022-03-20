@@ -22,6 +22,7 @@ Future<void> init() async {
         getAllPhotos: sl<GetAllPhotos>(),
         updatePhoto: sl<UpdatePhoto>(),
         sharedPreferences: sl(),
+        networkInfo: sl(),
       ));
 
   // UseCases

@@ -40,3 +40,12 @@ class PhotoError extends PhotoState {
   @override
   List<Object> get props => [message];
 }
+
+class PhotoNoInternetConnection extends PhotoState {
+  final String message;
+
+  const PhotoNoInternetConnection({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
